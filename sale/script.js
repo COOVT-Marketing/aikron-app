@@ -113,4 +113,5 @@ function renderPage() {
           <div class="field-group">
             <label>Age</label>
             <div class="input-wrap"><i class="ti ti-calendar-event"></i>
-              <input 
+              <input
+              <!-- FILE TRUNCATED HERE IN SOURCE UPLOAD — paste the rest to complete this file -->
