@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJutfFpRt8e10anFQgTIX0bHtfz9ukxZk_5UoZEt_O4qR-qcehcw0H92pj0UjLvomP1A/exec'; // ← Replace with your new deployment URL
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJutfFpRt8e10anFQgTIX0bHtfz9ukxZk_5UoZEt_O4qR-qcehcw0H92pj0UjLvomP1A/exec';
 
 const COMPANY_MAP = {
   'DEFAULT': 'Aikron'
@@ -31,15 +31,7 @@ function getParam(name) {
 }
 
 function boot() {
-  const phone = getParam('phone');
-  if (!phone && !getParam('first') && !getParam('campaign')) {
-    document.getElementById('app').innerHTML = `
-      <div class="no-call-screen">
-        <div class="no-call-icon"><i class="ti ti-phone-off"></i></div>
-        <h2>No webform found</h2>
-      </div>`;
-    return;
-  }
+  // Always show the sale form (no more "No webform found")
   renderPage();
 }
 
@@ -121,121 +113,4 @@ function renderPage() {
           <div class="field-group">
             <label>Age</label>
             <div class="input-wrap"><i class="ti ti-calendar-event"></i>
-              <input type="number" id="age" placeholder="Age" min="0" max="120">
-            </div>
-          </div>
-        </div>
-
-        <div class="section-label">Agent Notes</div>
-        <div class="field-group">
-          <label>Comments</label>
-          <div class="textarea-wrap"><i class="ti ti-notes"></i>
-            <textarea id="comments" placeholder="Comments…"></textarea>
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn-secondary" onclick="clearSaleForm()">
-            <i class="ti ti-refresh"></i> Clear
-          </button>
-          <button class="btn-primary" id="submitBtn" onclick="submitSaleForm()">
-            <i class="ti ti-device-floppy"></i> Submit Sale
-          </button>
-        </div>
-
-        <div class="success-toast" id="successToast">
-          <i class="ti ti-circle-check"></i> Sale submitted successfully!
-        </div>
-        <div class="error-toast" id="errorToast">
-          <i class="ti ti-alert-circle"></i> Submission failed.
-        </div>
-      </div>
-    </div>
-  `;
-
-  // Auto-fill from URL params
-  document.getElementById('agentName').value = getParam('agentName') || '';
-  document.getElementById('phone').value = phone || '';
-  document.getElementById('firstName').value = getParam('first') || '';
-  document.getElementById('lastName').value = getParam('last') || '';
-  document.getElementById('age').value = getParam('age') || '';
-  document.getElementById('did').value = getParam('did') || '';
-  document.getElementById('comments').value = getParam('comments') || '';
-
-  const stateVal = getParam('state');
-  if (stateVal) {
-    const sel = document.getElementById('state');
-    for (let i = 0; i < sel.options.length; i++) {
-      if (sel.options[i].value.toLowerCase() === stateVal.toLowerCase()) {
-        sel.value = sel.options[i].value;
-        break;
-      }
-    }
-  }
-}
-
-function clearSaleForm() {
-  ['agentName','firstName','lastName','phone','age','state','did','comments'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  document.getElementById('successToast').style.display = 'none';
-  document.getElementById('errorToast').style.display = 'none';
-}
-
-async function submitSaleForm() {
-  const btn = document.getElementById('submitBtn');
-  btn.innerHTML = '<i class="ti ti-loader"></i> Submitting…';
-  btn.disabled = true;
-
-  const payload = {
-    submissionType: 'AUTO_SALE_FORM',
-    agentName: document.getElementById('agentName').value,
-    phone: document.getElementById('phone').value,
-    firstName: document.getElementById('firstName').value,
-    lastName: document.getElementById('lastName').value,
-    age: document.getElementById('age').value,
-    state: document.getElementById('state').value,
-    zip: '',
-    dob: '',
-    company: document.getElementById('company').value,
-    campaign: document.getElementById('campaign').value,
-    did: document.getElementById('did').value,
-    comments: document.getElementById('comments').value
-  };
-
-  try {
-    const res = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-
-    if (data.status === 'success' || data.success) {
-      document.body.insertAdjacentHTML('beforeend', `
-        <div class="modal-overlay show" id="successModal">
-          <div class="modal-box">
-            <div class="modal-icon"><i class="ti ti-circle-check"></i></div>
-            <h2 class="modal-title">Sale Submitted</h2>
-            <p class="modal-sub">Successfully recorded.</p>
-            <button class="modal-close" onclick="
-              document.getElementById('successModal').remove();
-              window.location.replace('https://app.aikron.com/auto/');
-            ">Okay</button>
-          </div>
-        </div>
-      `);
-    } else {
-      throw new Error(data.message || 'Failed');
-    }
-  } catch (err) {
-    console.error(err);
-    btn.innerHTML = '<i class="ti ti-device-floppy"></i> Submit Sale';
-    btn.disabled = false;
-    document.getElementById('errorToast').style.display = 'flex';
-  }
-}
-
-// Start
-boot();
+              <input 
