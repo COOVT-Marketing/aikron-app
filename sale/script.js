@@ -221,7 +221,7 @@ async function submitSaleForm() {
             <p class="modal-sub">Successfully recorded.</p>
             <button class="modal-close" onclick="
               document.getElementById('successModal').remove();
-              window.location.replace('https://app.aikron.com/auto/');
+              window.location.replace('https://app-aikron.vercel.app/sale');
             ">Okay</button>
           </div>
         </div>
